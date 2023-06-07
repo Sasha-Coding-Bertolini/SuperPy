@@ -4,9 +4,10 @@ from sold import Sold
 from products import product_present
 from files import inventory_file, sold_file, bought_file
 from reports import report_inventory, report_profit, report_revenue
-from date import update_date, store_date, read_date
+from date import update_date, read_date, reset_date, set_date
 import calendar
 from rich import print
+import re
 
 parser = argparse.ArgumentParser(
     description="Perform action to buy and sell products and to report on supermarket inventory, revenue and profit"
@@ -49,15 +50,28 @@ parser.add_argument(
     type=lambda x: int(x) if x.isdigit() else x.lower(),
     help="Advance the date, or reset",
 )
+parser.add_argument(
+    "--set-date",
+    type=str,
+    help="Set the date to a specific date in format YYY-MM-DD",
+)
 
 
 args = parser.parse_args()
+
+if args.set_date:
+    if re.match(r"\d{4}-\d{2}-\d{2}", args.set_date):
+        # Valid date format, proceed with the code
+        set_date(args.set_date)
+    else:
+        print("Invalid date format. Please use YYYY-MM-DD format.")
+
 
 if args.advance_date:
     if isinstance(args.advance_date, int):
         update_date(args.advance_date)
     elif args.advance_date == "reset":
-        store_date()
+        reset_date()
         print(f"[bold]The date has been reset to {read_date()}[/bold]")
     else:
         print(
@@ -186,7 +200,7 @@ if args.action == "report profit":
     elif args.today:
         print(
             "Today's profit is: "
-            + str(report_profit(bought_file, sold_file, None, 1, None, None, True))
+            + str(report_profit(bought_file, sold_file, None, None, None, None, True))
             + " euro."
         )
 

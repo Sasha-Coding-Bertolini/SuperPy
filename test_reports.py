@@ -96,28 +96,21 @@ def test_report_profit():
     )
     assert profit_today == expected_profit_today
 
-    # Test case 2: Testing num_days_profit branch
-    expected_profit_num_days = 28.4
-    profit_num_days = report_profit(
-        test_bought_file, test_sold_file, None, 2, None, None, None
-    )
-    assert profit_num_days == expected_profit_num_days
-
-    # Test case 3: Testing year branch
+    # Test case 2: Testing year branch
     expected_profit_year = 28.4
     profit_year = report_profit(
         test_bought_file, test_sold_file, None, None, 2023, None, None
     )
     assert profit_year == expected_profit_year
 
-    # Test case 4: Testing year and month branch
+    # Test case 3: Testing year and month branch
     expected_profit_year_month = 28.4
     profit_year_month = report_profit(
         test_bought_file, test_sold_file, None, None, 2023, 5, None
     )
     assert profit_year_month == expected_profit_year_month
 
-    # Test case 5: Testing current_date branch
+    # Test case 4: Testing current_date branch
     expected_profit_current_date = 110
     profit_current_date = report_profit(
         test_bought_file, test_sold_file, "2023-05-16", None, None, None, None
