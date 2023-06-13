@@ -63,20 +63,22 @@ if args.set_date:
     if re.match(r"\d{4}-\d{2}-\d{2}", args.set_date):
         # Valid date format, proceed with the code
         set_date(args.set_date)
+        print(f"The date has been set to {args.set_date}.")
     else:
         print("Invalid date format. Please use YYYY-MM-DD format.")
 
 
 if args.advance_date:
-    if isinstance(args.advance_date, int):
-        update_date(args.advance_date)
+    if str(args.advance_date).lstrip("-").isdigit():
+        update_date(int(args.advance_date))
     elif args.advance_date == "reset":
         reset_date()
         print(f"[bold]The date has been reset to {read_date()}[/bold]")
     else:
         print(
-            "[bold red]Error[/bold red]: You must provide a number of days to advance the time or reset to current date."
+            "[bold red]Error[/bold red]: You must provide an integer value to advance the time or reset to the current date."
         )
+
 
 if args.action == "buy":
     if not args.product_name:

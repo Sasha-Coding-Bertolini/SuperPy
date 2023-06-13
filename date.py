@@ -61,6 +61,7 @@ def update_date(num_days):
     print(f"The date has been updated to {new_date_str}.")
 
 
+
 # Create function that manipulates date, but doesn't change the current date in the program.
 # This can be used for example when reporting on revenue or profit over specific time period.
 def manipulate_date(num_days):
