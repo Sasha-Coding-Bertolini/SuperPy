@@ -1,5 +1,5 @@
 from files import bought_file, inventory_file, sold_file
-from products import product_present
+from products import product_present, same_buy_date, same_expiration_date
 import csv
 import pandas as pd
 
@@ -51,11 +51,19 @@ def write_sold_file(write_values):
 # Create function for adding bought products to inventory.csv
 def add_inventory_product(write_values):
     df = pd.read_csv(inventory_file)
-    # Add count if product already in inventory
-    if product_present(inventory_file, write_values[1]):
-        df.loc[(df["product_name"] == write_values[1]), "count"] = (
-            df.loc[(df["product_name"] == write_values[1]), "count"]
-        ) + 1
+    # Add count if product already in inventory, buy_date is the same and expiration_date is the same
+    if (
+        product_present(inventory_file, write_values[1])
+        and same_buy_date(inventory_file, write_values[5])
+        and same_expiration_date(inventory_file, write_values[4])
+    ):
+        df.loc[
+            (df["product_name"] == write_values[1])
+            & (df["buy_date"] == write_values[5])
+            & (df["expiration_date"] == write_values[4]),
+            "count",
+        ] += 1
+
         df.to_csv(inventory_file, index=False)
     # Add new product to inventory if not present
     else:
@@ -81,22 +89,17 @@ def remove_inventory_product(product_name):
     elif product_present(inventory_file, product_name) and (
         df.loc[df["product_name"] == product_name, "count"].iloc[0] == 1
     ):
-        print(f"Only 1 of {product_name} left in inventory, removing product...")
-        # df.drop(df.loc([df["product_name"] == product_name].index[0]))
-        # df.to_csv(inventory_file, index=False)
-        # def delete_row(filename, column_name, value):
-        with open(inventory_file, "r") as file:
-            reader = csv.DictReader(file)
-            rows = [row for row in reader if row["product_name"] != product_name]
-
-        with open(inventory_file, "w", newline="") as file:
-            writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
+        print(f"{product_name} is present in inventory, subtracting count -1")
+        df = df.drop(df.loc[df["product_name"] == product_name].index[0])
+        df.to_csv(inventory_file, index=False)
     # Subtract count if product already in inventory
     else:
         print(f"{product_name} is present in inventory, subtracting count -1")
-        df.loc[(df["product_name"] == product_name), "count"] = (
-            df.loc[(df["product_name"] == product_name), "count"]
-        ) - 1
+        subtracted_count = False  # Flag variable to track if count has been subtracted
+        for index, row in df.iterrows():
+            if row["product_name"] == product_name and not subtracted_count:
+                df.loc[index, "count"] = row["count"] - 1
+                subtracted_count = (
+                    True  # Set flag to True after subtracting count for the first row
+                )
         df.to_csv(inventory_file, index=False)

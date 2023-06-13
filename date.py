@@ -9,10 +9,20 @@ def store_date():
     return now
 
 
-with open(date_file, "w", newline="") as time:
-    writer = csv.DictWriter(time, fieldnames=["current_date"])
-    writer.writeheader()
-    writer.writerow({"current_date": store_date()})
+# reset the date to today's date
+def reset_date():
+    with open(date_file, "w", newline="") as time:
+        writer = csv.DictWriter(time, fieldnames=["current_date"])
+        writer.writeheader()
+        writer.writerow({"current_date": store_date()})
+
+
+# set the date to a specific date
+def set_date(date):
+    with open(date_file, "w", newline="") as time:
+        writer = csv.DictWriter(time, fieldnames=["current_date"])
+        writer.writeheader()
+        writer.writerow({"current_date": date})
 
 
 # Read the current date
@@ -45,6 +55,7 @@ def update_date(num_days):
     # Write the new date to the CSV file
     with open(filename, "w") as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
         writer.writerow({"current_date": new_date_str})
 
     print(f"The date has been updated to {new_date_str}.")

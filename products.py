@@ -12,6 +12,24 @@ def product_present(file, product_name):
                 return True
 
 
+# Report if buy date is the same
+def same_buy_date(file, buy_date):
+    with open(file, newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row["buy_date"] == buy_date:
+                return True
+
+
+# Report if expiration date is the same
+def same_expiration_date(file, expiration_date):
+    with open(file, newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row["expiration_date"] == expiration_date:
+                return True
+
+
 # Create a new ID if product is not in bought.csv already, otherwise use same ID
 def create_id(product_name):
     with open(bought_file, "r") as file:

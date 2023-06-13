@@ -34,21 +34,15 @@ def print_table(data):
 # REPORT INVENTORY:
 def report_inventory(file, date_inventory, num_days_inventory, year, month):
     df = pd.read_csv(file)
-    # convert 'date' column to datetime format
+    # Convert 'date' column to datetime format
     df["buy_date"] = pd.to_datetime(df["buy_date"])
+
     if num_days_inventory:
-        # select rows before the given date
+        # Select rows before the given date
         selected_rows = df[df["buy_date"] <= manipulate_date(num_days_inventory)]
-        # drop column 'buy_date' from DataFrame
-        selected_rows = selected_rows.drop("buy_date", axis=1)
-        print_table(selected_rows)
-        return selected_rows
     elif year and not month:
         date_range = pd.date_range(start=f"{str(year)}-01-01", end=f"{str(year)}-12-31")
         selected_rows = df[df["buy_date"].isin(date_range)]
-        selected_rows = selected_rows.drop("buy_date", axis=1)
-        print_table(selected_rows)
-        return selected_rows
     elif year and month:
         year = int(year)
         month = int(month)
@@ -58,15 +52,38 @@ def report_inventory(file, date_inventory, num_days_inventory, year, month):
             end=f"{str(year)}-{str(month)}-{str(days_in_month)}",
         )
         selected_rows = df[df["buy_date"].isin(date_range)]
-        selected_rows = selected_rows.drop("buy_date", axis=1)
-        print_table(selected_rows)
-        return selected_rows
     else:
-        # select rows before the given date
+        # Select rows before the given date
         selected_rows = df[df["buy_date"] <= date_inventory]
-        selected_rows = selected_rows.drop("buy_date", axis=1)
-        print_table(selected_rows)
-        return selected_rows
+
+    # Reset the index of selected_rows
+    selected_rows = selected_rows.reset_index(drop=True)
+
+    # Drop the 'buy_date' column from the DataFrame
+    selected_rows = selected_rows.drop(columns=["buy_date"])
+
+    # Merge rows with the same product_name and update the count column
+    selected_rows = selected_rows.groupby(
+        ["product_name", "expiration_date"], as_index=False
+    ).agg(
+        {
+            "id": "first",
+            "buy_price": "first",
+            "expiration_date": "first",
+            "count": "sum",
+        }
+    )
+
+    # Reorder the columns
+    selected_rows = selected_rows[
+        ["id", "product_name", "count", "buy_price", "expiration_date"]
+    ]
+
+    # Sort rows based on 'id' column in ascending order
+    selected_rows = selected_rows.sort_values("id", ascending=True)
+
+    print_table(selected_rows)
+    return selected_rows
 
 
 # REPORT REVENUE:

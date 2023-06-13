@@ -7,6 +7,7 @@ A command-line tool written in Python 3 that supermarkets use to keep track of t
 - argparse (https://docs.python.org/3/library/argparse.html)
 - calendar (https://docs.python.org/3/library/calendar.html)
 - csv (https://docs.python.org/3/library/csv.html)
+- re (https://docs.python.org/3/library/re.html)
 - datetime (https://docs.python.org/3/library/datetime.html)
 - os.path (https://docs.python.org/3/library/os.path.html)
 - rich (https://rich.readthedocs.io/en/stable/introduction.html)
@@ -14,8 +15,14 @@ A command-line tool written in Python 3 that supermarkets use to keep track of t
 - unittest.mock (https://docs.python.org/3/library/unittest.html)
 - pandas (https://pandas.pydata.org/)
   - `pip install pandas`
+- pytest (https://docs.pytest.org/en/7.3.x/)
+  - `pip install -U pytest`
 
 ## Commandline Options
+
+- `pytest`
+
+Performs a test on testfiles in program. Perform test to verify if report functions work correctly.
 
 - `python super.py -h` or `python super.py --help`
 
@@ -46,11 +53,17 @@ options:
 
 ### `--advance-date`
 
-The internal conception of what day it is. Use `--advance-time reset` to reset the internal day to today’s date. This option does not require other arguments.
+The internal conception of what day it is. Use `--advance-date reset` to reset the internal day to today’s date. The date does not automatically set to today's date when starting the program, so remember to reset the date if you want to start with today's date. This option does not require other arguments.
 
-- `python super.py --advance-time 2`
-- `python super.py --advance-time 5`
-- `python super.py --advance-time reset`
+- `python super.py --advance-date 2`
+- `python super.py --advance-date 5`
+- `python super.py --advance-date reset`
+
+### `--set-date`
+
+Sets the date to a specific date. Takes a date in format YYYY-MM-DD.
+
+- `python super.py --set-date 2023-01-01`
 
 ### `buy`
 
